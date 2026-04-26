@@ -1,0 +1,13 @@
+export ROCM_VERSION="${ROCM_VERSION:-7.2.1}"
+export ROCM_ARCH="${ROCM_ARCH:-gfx1201}"
+export PYTHON_VERSION="${PYTHON_VERSION:-3.12}"
+
+# Torch specific vars
+export TORCH_BRANCH="${TORCH_BRANCH:-v2.7.1}"
+export TORCH_VISION_BRANCH="${TORCH_VISION_BRANCH:-}"
+export TORCH_AUDIO_BRANCH="${TORCH_AUDIO_BRANCH:-}"
+export TORCH_MAX_JOBS="${TORCH_MAX_JOBS:-$(nproc)}"
+
+export REGISTRY="docker.io/kyuz0"
+export ROCM_TOOLBOX_TAG="${REGISTRY}/rocm-toolbox-${ROCM_ARCH}:${ROCM_VERSION}"
+export TORCH_TOOLBOX_TAG="${REGISTRY}/pytorch-toolbox-${ROCM_ARCH}:${TORCH_BRANCH}-rocm-${ROCM_VERSION}"
