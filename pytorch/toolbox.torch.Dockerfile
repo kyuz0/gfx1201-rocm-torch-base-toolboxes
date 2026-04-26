@@ -41,7 +41,7 @@ RUN pip install            \
 
 WORKDIR /build/pytorch
 ARG PYTORCH_REPO="https://github.com/pytorch/pytorch.git"
-ARG PYTORCH_BRANCH="v2.7.1"
+ARG PYTORCH_BRANCH="v2.11.0"
 RUN git clone --depth 1 --recurse-submodules --shallow-submodules --jobs 4 --branch "${PYTORCH_BRANCH}" "${PYTORCH_REPO}" .
 RUN pip install -r requirements.txt
 RUN python3 tools/amd_build/build_amd.py
