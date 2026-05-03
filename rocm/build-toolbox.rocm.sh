@@ -20,6 +20,7 @@ podman build -t "${ROCM_TOOLBOX_TAG}" \
   --build-arg BASE_IMAGE="${BASE_ROCM_IMAGE}" \
   --build-arg ROCM_ARCH="${ROCM_ARCH}" \
   --build-arg ROCM_VERSION="${ROCM_VERSION}" \
+  --build-arg RCCL_BRANCH="${RCCL_BRANCH}" \
   -f ./rocm/toolbox.rocm.Dockerfile ./rocm 2>&1 | tee ./logs/build_rocm_toolbox_$(date +%Y%m%d%H%M%S).log
 
 echo ">>> Pushing ${ROCM_TOOLBOX_TAG}... "

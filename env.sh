@@ -2,6 +2,10 @@ export ROCM_VERSION="${ROCM_VERSION:-7.2.1}"
 export ROCM_ARCH="${ROCM_ARCH:-gfx1201}"
 export PYTHON_VERSION="${PYTHON_VERSION:-3.12}"
 
+# RCCL specific
+# Override the RCCL branch to build from. If empty, defaults to the detected ROCm version.
+export RCCL_BRANCH="rocm-7.1.1"
+
 # Torch specific vars
 export TORCH_BRANCH="${TORCH_BRANCH:-v2.11.0}"
 export TORCH_VISION_BRANCH="${TORCH_VISION_BRANCH:-}"

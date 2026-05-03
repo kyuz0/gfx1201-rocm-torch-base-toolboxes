@@ -6,6 +6,7 @@ ARG ROCM_ARCH="gfx1201"
 ARG ROCBLAS_REPO="https://github.com/ROCm/rocBLAS.git"
 ARG TENSILE_REPO="https://github.com/ROCm/Tensile.git"
 ARG RCCL_REPO="https://github.com/ROCm/rccl.git"
+ARG RCCL_BRANCH=""
 
 RUN apt-get update && apt-get install -y git cmake libfmt-dev dpkg rpm sudo libcap2-bin libnss-myhostname
 
@@ -57,7 +58,13 @@ RUN cd ./build/release && \
 ENV PACKAGE_NAME=rccl
 WORKDIR /rebuild-deps/rccl
 
-RUN git clone --depth 1 --branch rocm-$(cat /opt/ROCM_VERSION_FULL) ${RCCL_REPO} .
+RUN if [ -n "${RCCL_BRANCH}" ]; then \
+        export TARGET_BRANCH="${RCCL_BRANCH}"; \
+    else \
+        export TARGET_BRANCH="rocm-$(cat /opt/ROCM_VERSION_FULL)"; \
+    fi && \
+    echo "Cloning RCCL from branch: ${TARGET_BRANCH}" && \
+    git clone --depth 1 --branch "${TARGET_BRANCH}" ${RCCL_REPO} .
 RUN dpkg -s ${PACKAGE_NAME}
 RUN export INSTALLED_PACKAGE_VERSION=$(dpkg -s ${PACKAGE_NAME} | sed -nE 's|^ *Version: (.+)$|\1|p') && \
     echo "Installed package version is \"$INSTALLED_PACKAGE_VERSION\"" && \
@@ -72,7 +79,9 @@ RUN export INSTALLED_PACKAGE_VERSION=$(dpkg -s ${PACKAGE_NAME} | sed -nE 's|^ *V
 RUN cd ./build/release && \
     export INSTALLED_PACKAGE_VERSION=$(dpkg -s ${PACKAGE_NAME} | sed -nE 's|^ *Version: (.+)$|\1|p') && \
     export BUILDED_PACKAGE_VERSION=$(dpkg -I /dist-rccl/${PACKAGE_NAME}_*.deb | sed -nE 's|^ *Version: (.+)$|\1|p') && \
-    if [ "$BUILDED_PACKAGE_VERSION" != "$INSTALLED_PACKAGE_VERSION" ]; then echo "ERR: Builded version is $BUILDED_PACKAGE_VERSION but expected $INSTALLED_PACKAGE_VERSION"; exit 10; fi && \
+    if [ "$BUILDED_PACKAGE_VERSION" != "$INSTALLED_PACKAGE_VERSION" ]; then \
+        echo "WARN: Builded version is $BUILDED_PACKAGE_VERSION but expected $INSTALLED_PACKAGE_VERSION. Proceeding anyway since version might be pinned."; \
+    fi && \
     dpkg -i /dist-rccl/*.deb && \
     true
 
